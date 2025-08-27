@@ -1,31 +1,32 @@
 // camera_cropper.h
 #pragma once
 
-#include "esphome/components/camera/camera.h"
-#include "esphome/core/component.h"
+#include "esphome/components/camera/processor.h"
 
 namespace esphome {
 namespace camera_cropper {
 
-using namespace camera;
-
-class CameraCropper : public Processor {
+class CameraCropper : public camera::Processor {
  public:
-  CameraCropper(CameraImageSpec *spec, CameraImageImpl *image, int crop_x, int crop_y, int crop_width, int crop_height)
-      : spec_(spec), image_(image), crop_x_(crop_x), crop_y_(crop_y), crop_width_(crop_width), crop_height_(crop_height) {}
+  CameraCropper(camera::CameraImageSpec *spec, camera::CameraImage *output, int crop_x, int crop_y, int crop_width, int crop_height);
+  
+  // Processor interface methods
+  size_t process_pixels(camera::CameraImageSpec *input_spec, camera::CameraImage *input) override;
+  camera::CameraImageSpec *get_output_image_spec() override { return this->output_spec_; }
+  camera::CameraImage *get_output_image() override { return this->output_image_; }
 
-  void set_image(CameraImageImpl *image) { image_ = image; }
-  void set_spec(CameraImageSpec *spec) { spec_ = spec; }
-
-  void apply(std::shared_ptr<CameraImage> image) override;
+  void set_flip_x(bool flip) { this->flip_x_ = flip; }
+  void set_flip_y(bool flip) { this->flip_y_ = flip; }
 
  protected:
-  CameraImageSpec *spec_;
-  CameraImageImpl *image_;
   int crop_x_;
   int crop_y_;
   int crop_width_;
   int crop_height_;
+  bool flip_x_{};
+  bool flip_y_{};
+  camera::CameraImageSpec *output_spec_{};
+  camera::CameraImage *output_image_{};
 };
 
 }  // namespace camera_cropper
