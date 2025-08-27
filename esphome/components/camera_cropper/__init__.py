@@ -7,7 +7,7 @@ from esphome.const import (
     CONF_WIDTH,
 )
 
-CODEOWNERS = ["@nliaudat"]
+CODEOWNERS = ["@DT-art1", "@nliaudat"]
 
 AUTO_LOAD = ["camera"]
 
